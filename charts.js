@@ -59,6 +59,7 @@ function buildCharts(sample) {
   d3.json("samples.json").then((data) => {
     // 3. Create a variable that holds the samples array. 
     var samples = data.samples
+    var metadata = data.metadata;
     // 4. Create a variable that filters the samples for the object with the desired sample number.
     var resultArray = samples.filter(sampleObj => sampleObj.id == sample);
     //  5. Create a variable that holds the first sample in the array.
@@ -90,5 +91,68 @@ function buildCharts(sample) {
     };
     // 10. Use Plotly to plot the data with the layout. 
     Plotly.newPlot("bar", barData, barLayout);
-  });
-}
+
+    // 1. Create the trace for the bubble chart.
+    var bubbleData = [{  
+        x: otu_ids,
+        y: result.sample_values,
+        text : result.otu_labels, 
+        mode : "markers", 
+        marker: { 
+          color : result.otu_ids,
+          size : result.sample_values, 
+          colorscale : "Picnic",  
+        }
+      }];
+      
+    // 2. Create the layout for the bubble chart.
+    var bubbleLayout = {
+        title: "Bacteria  Cultures per Sample",
+        hovermode : "closest",
+        xaxis: {
+          title: {
+            text: "OTU IDS" }},
+        autosize: true
+    };
+      
+    // 3. Use Plotly to plot the data with the layout.
+    Plotly.newPlot("bubble", bubbleData, bubbleLayout); 
+   
+
+      // Create a variable that holds the first sample in the metadata array.
+    
+    console.log(metadata)
+    var gaugeArray = metadata.filter(sampleObj => sampleObj.id == sample);
+    console.log(gaugeArray)
+    var gauageResult = gaugeArray[0];
+
+    // 3. Create a variable that holds the washing frequency.
+    var wfreq = gauageResult.wfreq
+    // 4. Create the trace for the gauge chart.
+    var gaugeData = [{
+      value: wfreq,
+        type: "indicator",
+        mode: "gauge+number",
+        title: {text:"<b> Belly Button Washing Frequency</b><br></br> Scrubs Per Week"},
+        gauge: {
+          axis: {range: [null,10], dtick: "2"},
+          bar: {color: "black"},
+          steps:[
+            {range: [0, 2], color: "red"},
+            {range: [2, 4], color: "green"},
+            {range: [4, 6], color: "yellow"},
+            {range: [6, 8], color: "purple"},
+            {range: [8, 10], color: "skyblue"}
+          ],
+          dtick: 2
+        }
+    }];
+    
+    // 5. Create the layout for the gauge chart.
+    var gaugeLayout = { 
+      autosize: true
+    };
+
+    // 6. Use Plotly to plot the gauge data and layout.
+    Plotly.newPlot("gauge", gaugeData, gaugeLayout);
+})};
