@@ -1,0 +1,8 @@
+select {
+    width: 100%;
+    padding: 16px 20px;
+    border: aqua;
+    border-radius: 4px;
+    background-color: #98da42;
+    cursor:all-scroll;
+  }
